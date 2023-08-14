@@ -4,7 +4,7 @@ import io from "socket.io-client"
 import {CgSpinner} from "react-icons/cg"
 
 
-const socket = io.connect(process.env.REACT_APP_API_URL)
+const socket = io.connect(process.env.REACT_APP_MAIN_URL)
 
 const AuthContext = createContext();
 

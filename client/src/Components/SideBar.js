@@ -149,7 +149,7 @@ function SideBar() {
       inputRef.current.focus();
     }
   }, [openSearch]);
-console.log("recive ",friendsList)
+
   useEffect(() => {
     socket.on("reciveMsg", (data) => {
       setarrive([...arrive, data]);
