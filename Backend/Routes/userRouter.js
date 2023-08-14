@@ -29,7 +29,7 @@ passport.use(
       clientID:
         "811398230314-kg8kfbcn5hd4moj12oq1rtqv91afejus.apps.googleusercontent.com",
       clientSecret: "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",
-      callbackURL: "http://localhost:8000/api/login/callback",
+      callbackURL: `${process.env.CURRENT_URL}/api/login/callback`,
       scope: ["profile", "email"],
     },
     async function (accessToken, refreshToken, profile, done) {

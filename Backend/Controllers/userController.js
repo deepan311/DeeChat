@@ -9,14 +9,14 @@ exports.callback = async (req, res) => {
     const token = await jwt.sign(JSON.stringify(userData), process.env.KEY);
 
     if (!token) {
-      return res.redirect(`http://${req.get("host")}/login`);
+      return res.redirect(`${req.protocol}://${req.get("host")}/login`);
     }
 
     return res
       .status(200)
-      .redirect(`http://${req.get("host")}/redirect/${token}`);
+      .redirect(`${req.protocol}://${req.get("host")}/redirect/${token}`);
   } catch (error) {
-    return res.status(400).redirect(`http://${req.get("host")}/login`);
+    return res.status(400).redirect(`${req.protocol}://${req.get("host")}/login`);
   }
 };
 
