@@ -89,7 +89,7 @@ function Profile({ setprofile, setMakeCon, friendsList, setFriendsList }) {
       <div
         className={` ${
           deleteOpen ? " block" : "hidden"
-        } absolute bg-gray-200  top-0 bottom-0  w-[60vh] rounded-lg jonh-font p-7 flex flex-col items-center `}
+        } absolute bg-gray-200  top-0 bottom-0 w-full  rounded-lg jonh-font p-7 flex flex-col items-center `}
       >
         <BsArrowLeftShort
           onClick={() => {
