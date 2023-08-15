@@ -4,7 +4,7 @@ import { ReactComponent as ProfileIcon } from "../asset/CustomIcon/dummyProfile.
 import { useAuthContext } from "../Auth";
 import { useNavigate } from "react-router-dom";
 
-function NavBar() {
+function NavBar({ setprofile}) {
   const { logOut, userDetails } = useAuthContext();
   const [pic, setPic] = useState(null);
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ function NavBar() {
   };
   return (
     <div
-      className="w-full h-16 bg-gradient-to-r fixed top-0 from-[#DEDEDE] z-10 flex justify-between items-center to-[rgba(67, 101, 90, 0)] "
+      className="cursor-pointer w-full h-16 bg-gradient-to-r fixed top-0 from-[#DEDEDE] z-10 flex justify-between items-center to-[rgba(67, 101, 90, 0)] "
       style={{ boxShadow: "0px 3px 4px 0px rgba(81,81,81,0.75)" }}
     >
       <Logo className="h-14" />
@@ -36,7 +36,7 @@ function NavBar() {
           SignOut
         </h2>
         <div className="w-10 h-10">
-          <img src={pic} alt="alt" className="w-full rounded-full h-full" />
+          <img onClick={()=>{setprofile(true)}} src={pic} alt="alt" className="w-full rounded-full h-full" />
         </div>
       </div>
     </div>

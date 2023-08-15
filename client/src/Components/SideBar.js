@@ -11,16 +11,17 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../Auth";
 import axios from "axios";
 import MakeConnection from "./HelperCom/MakeConnection";
-import {CgSpinner} from "react-icons/cg"
+import { CgSpinner } from "react-icons/cg";
+import Profile from "./Profile";
 
-function SideBar() {
+function SideBar({ profile, setprofile }) {
   const [openSearch, setopenSearch] = useState(false);
   const [friendsList, setFriendsList] = useState([]);
   const [load, setload] = useState(false);
   const inputRef = useRef();
   const [makeCon, setMakeCon] = useState(false);
   const navigate = useNavigate();
-  const { userDetails, activeUser, socket,openUser } = useAuthContext();
+  const { userDetails, activeUser, socket, openUser } = useAuthContext();
   const [error, seterror] = useState({ status: false, msg: "" });
   const [arrive, setarrive] = useState([]);
 
@@ -106,35 +107,33 @@ function SideBar() {
     // Create the formatted date-time string
     const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
 
-    
-    const updateManual=  friendsList.map((item) => {
-        if (item.userInfo.googleId == id) {
-          return {
-            ...item,
-            conversation: {
-              ...item.conversation,
-              updatedAt: formattedDateTime,
-            },
-
-          };
-        } else {
-          return item;
-        }
-      })
-      if(updateManual.length ==0){
-        console.log("Id Not valid")
-        return null
+    const updateManual = friendsList.map((item) => {
+      if (item.userInfo.googleId == id) {
+        return {
+          ...item,
+          conversation: {
+            ...item.conversation,
+            updatedAt: formattedDateTime,
+          },
+        };
+      } else {
+        return item;
       }
-      setFriendsList(sortArray(updateManual))
-    
-    console.log("manual",friendsList)
+    });
+    if (updateManual.length == 0) {
+      console.log("Id Not valid");
+      return null;
+    }
+    setFriendsList(sortArray(updateManual));
+
+    console.log("manual", friendsList);
   };
 
   // useEffect(() => {
-    
+
   //    const sort= sortArray(friendsList)
   //    setFriendsList(sort)
-    
+
   // }, [friendsList]);
 
   useEffect(() => {
@@ -153,12 +152,26 @@ function SideBar() {
   useEffect(() => {
     socket.on("reciveMsg", (data) => {
       setarrive([...arrive, data]);
-      ManualUpdateTime(data.senderId)
+
+      ManualUpdateTime(data.senderId);
     });
   }, [socket]);
 
+  useEffect(() => {
+    socket.on("delete", (data) => {
+      if (friendsList.length != 0) {
+        const updatedList = friendsList.filter(
+          (item) => item.userInfo.googleId != data.senderID
+        );
+        console.log("update", updatedList);
+
+        setFriendsList(updatedList);
+      }
+    });
+  }, [socket, friendsList]);
+
   return (
-    <div className="w-full max-h-[calc(92vh-4px)] relative mt-16 flex flex-col shadow-2xl  bg-[#F2ECFF]">
+    <div className="w-full max-h-[calc(91vh-4px)] relative mt-[69px] flex flex-col shadow-2xl  bg-[#F2ECFF]">
       <div className=" overflow-hidden">
         {/* SEARCHBAR=============== */}
         <div
@@ -199,7 +212,7 @@ function SideBar() {
               openSearch ? "hidden" : "block"
             } text-white font-bold`}
           >
-            Heyy Deepan
+            Heyy {userDetails && userDetails.name}
           </h2>
           <AdduserIcon
             onClick={() => setMakeCon(true)}
@@ -218,7 +231,8 @@ function SideBar() {
 
           {load ? (
             <div className="pt-16 flex justify-center h-[80vh]  items-center">
-             <CgSpinner  className="text-2xl animate-spin" />Loding...
+              <CgSpinner className="text-2xl animate-spin" />
+              Loding...
             </div>
           ) : (
             <>
@@ -263,6 +277,21 @@ function SideBar() {
         } `}
       >
         <MakeConnection setMakeCon={setMakeCon} />
+      </div>
+
+      {/* Profile================== */}
+
+      <div
+        className={`${
+          profile ? "block" : "hidden"
+        } fixed w-full flex justify-center z-50 h-full py-5 bg-black/70`}
+      >
+        <Profile
+          setprofile={setprofile}
+          setMakeCon={setMakeCon}
+          friendsList={friendsList}
+          setFriendsList={setFriendsList}
+        />
       </div>
     </div>
   );

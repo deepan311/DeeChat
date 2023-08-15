@@ -83,7 +83,7 @@ const RemoveActive = (id) => {
 const io = socket(server, { cors: `*` });
 
 io.on("connection", (socket) => {
-  console.log("connected", socket.id);
+  // console.log("connected", socket.id);
   socket.on("active", (data) => {
     // console.log(data);
     addactive(socket.id, data);
@@ -100,8 +100,17 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("delete",(data)=>{
+    const getUser = activeUser.find((item) => item.gId === data.googleId);
+    
+    if(getUser){
+      io.to(getUser.id).emit("delete",data)
+
+    }
+  })
+
   socket.on("disconnect", (reason, details) => {
-    console.log("disconnect ", reason); // 400
+    // console.log("disconnect ", reason); // 400
     console.log("disconect details", socket.id); // '{"code":1,"message":"Session ID unknown"}'
 
     RemoveActive(socket.id);

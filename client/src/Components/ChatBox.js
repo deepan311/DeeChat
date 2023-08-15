@@ -44,7 +44,6 @@ function ChatBox({ active }) {
     };
   }, [socket]);
 
- 
   const chatFetch = async () => {
     setload(true);
     await axios
@@ -83,10 +82,8 @@ function ChatBox({ active }) {
 
   useEffect(() => {
     chatFetch();
-    setmsg([])
+    setmsg([]);
   }, [openUser.userData]);
-
- 
 
   useEffect(() => {
     // Scroll to the bottom when the component is loaded
@@ -100,9 +97,9 @@ function ChatBox({ active }) {
     if (msg === "") {
       return null;
     }
-   
+
     const sendMsg = {
-      createdAt:Date.now(),
+      createdAt: Date.now(),
       senderId: userDetails.googleId,
       reciverId: Id,
       text: msg,
@@ -111,7 +108,16 @@ function ChatBox({ active }) {
     setmsg((pre) => [...pre, sendMsg]);
 
     addMsg(msg);
-    openUser.ManualUpdateTime(Id)
+    openUser.ManualUpdateTime(Id);
+  };
+
+  const deleteCoversation = async ({ username, id }) => {
+    await axios.delete(`${process.env.REACT_APP_API_URL}/chat/delchat`, {
+      delUserName: username,
+      gId: id,
+    }).then(res=>{
+      
+    })
   };
 
   return (

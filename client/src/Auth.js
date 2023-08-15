@@ -29,10 +29,11 @@ export const AuthProvider = ({ children }) => {
       setUserDetails(res.data);
       setAuth(true);
       setLoading(false)
+      
       return res;
     } catch (error) {
       setLoading(false)
-      throw error;
+      console.log(error)
     }
   };
 

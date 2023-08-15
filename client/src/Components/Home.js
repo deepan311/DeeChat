@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 import SideBar from "./SideBar";
 import ChatBox from "./ChatBox";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../Auth";
 
-
 function Home() {
 
   const {openUser, setOpenUser,socket,activeUser} =useAuthContext()
+const [profile, setprofile] = useState(false);
+
 
 
   useEffect(() => {
@@ -19,10 +20,10 @@ function Home() {
 
   return (
     <>
-      <NavBar />
+      <NavBar profile={profile} setprofile={setprofile} />
       <div className="grid h-screen grid-cols-12 w-full">
         <div className="col-span-12 lg:col-span-3">
-          <SideBar />
+          <SideBar profile={profile} setprofile={setprofile} />
         </div>
 
         {/* <div className="hidden lg:block lg:col-span-9">
