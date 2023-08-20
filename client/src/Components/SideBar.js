@@ -106,9 +106,12 @@ function SideBar({ profile, setprofile }) {
 
     // Create the formatted date-time string
     const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+   
 
     const updateManual = friendsList.map((item) => {
+
       if (item.userInfo.googleId == id) {
+       
         return {
           ...item,
           conversation: {
@@ -126,8 +129,12 @@ function SideBar({ profile, setprofile }) {
     }
     setFriendsList(sortArray(updateManual));
 
-    console.log("manual", friendsList);
+   
   };
+
+  
+
+
 
   // useEffect(() => {
 
@@ -148,14 +155,18 @@ function SideBar({ profile, setprofile }) {
       inputRef.current.focus();
     }
   }, [openSearch]);
+  // console.log("friendlist", friendsList);
 
   useEffect(() => {
-    socket.on("reciveMsg", (data) => {
+    // console.log("before....",friendsList)
+
+    socket.on("reciveMsg",(data) => {
       setarrive([...arrive, data]);
 
+      
       ManualUpdateTime(data.senderId);
     });
-  }, [socket]);
+  }, [socket,friendsList]);
 
   useEffect(() => {
     socket.on("delete", (data) => {
@@ -163,7 +174,6 @@ function SideBar({ profile, setprofile }) {
         const updatedList = friendsList.filter(
           (item) => item.userInfo.googleId != data.senderID
         );
-        console.log("update", updatedList);
 
         setFriendsList(updatedList);
       }
