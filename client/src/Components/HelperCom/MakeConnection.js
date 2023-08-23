@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { RiSearch2Line } from "react-icons/ri";
 import ProfilePic from "../../asset/ProfilePic.jpg";
 import { AiOutlineUserAdd } from "react-icons/ai";
-import { ImCross } from "react-icons/im";
+import { BsArrowLeftShort } from "react-icons/bs";
 import { MdOutlineMobileFriendly } from "react-icons/md";
 import { IoIosListBox } from "react-icons/io";
 import { BiLoader } from "react-icons/bi";
@@ -60,18 +60,21 @@ function MakeConnection({ setMakeCon }) {
     if (!input) {
       setsearchList({});
     }
+   
   }, [input]);
 
 
 
   return (
-    <div className=" w-[calc(100vh-10vh)] relative bg-white/80 h-[90vh] rounded-md p-2  py-12 flex flex-col ">
-      <div className="absolute top-3 right-4 cursor-pointer">
-        <ImCross
+    <div className=" w-[calc(100vh-10vh)] relative bg-white/90 h-[87vh] rounded-md p-2  py-12 flex flex-col ">
+      <div className="absolute top-3 left-4 cursor-pointer">
+        <BsArrowLeftShort
           onClick={() => {
+            
             setMakeCon(false);
+            
           }}
-          className="text-black"
+          className="text-black text-3xl"
         />
       </div>
 

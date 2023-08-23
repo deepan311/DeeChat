@@ -39,9 +39,9 @@ function Login() {
           className="bg-white flex justify-around shadow-md hover:shadow-2xl cursor-pointer hover:bg-white/80 items-center py-3 px-6  rounded-full"
         >
           <Google className="px-1" />
-          <h2 className="px-2 font-medium">{load?"loding...":"SignIn With Google"}</h2>
+          <h2 className="px-2 font-medium">{load?"Loding...":"SignIn With Google"}</h2>
         </div>
-        <h2 className="text-[#5D5D5D] my-16 jonh-font flex gap-2 font-medium">
+        <h2 className="text-[#5D5D5D] text-center my-16 jonh-font flex gap-2 font-medium">
           Let’s Make Conversation with your Buddy <ChatIcon className="w-5" />
         </h2>
       </div>

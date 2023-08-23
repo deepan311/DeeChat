@@ -13,6 +13,7 @@ import axios from "axios";
 import MakeConnection from "./HelperCom/MakeConnection";
 import { CgSpinner } from "react-icons/cg";
 import Profile from "./Profile";
+import {SiReacthookform} from "react-icons/si"
 
 function SideBar({ profile, setprofile }) {
   const [openSearch, setopenSearch] = useState(false);
@@ -24,6 +25,8 @@ function SideBar({ profile, setprofile }) {
   const { userDetails, activeUser, socket, openUser } = useAuthContext();
   const [error, seterror] = useState({ status: false, msg: "" });
   const [arrive, setarrive] = useState([]);
+  const [searchFriend, setsearchFriend] = useState("");
+  const [searchFriendList, setsearchFriendList] = useState([]);
 
   //  console.log(friendsList)
 
@@ -75,6 +78,8 @@ function SideBar({ profile, setprofile }) {
   const handleClickOutside = (event) => {
     if (inputRef.current && !inputRef.current.contains(event.target)) {
       setopenSearch(false);
+      setsearchFriend("")
+      setsearchFriendList([])
     }
   };
   useEffect(() => {
@@ -85,7 +90,6 @@ function SideBar({ profile, setprofile }) {
   }, []);
 
   const sortArray = (arr) => {
-    console.log(arr)
     const newSort = arr.sort(
       (a, b) =>
         new Date(b.conversation.updatedAt) - new Date(a.conversation.updatedAt)
@@ -174,18 +178,37 @@ function SideBar({ profile, setprofile }) {
   useEffect(() => {
     if (friendsList.length != 0) {
       friendsList.map((item) => {
-     if(item.conversation){
-      if (
-        item.conversation.lastMessage.status &&
-        item.conversation.lastMessage.msg.senderId == item.userInfo.googleId
-      ) {
-        setarrive([...arrive, item.conversation.lastMessage.msg]);
-      }
-     }
+        if (item.conversation) {
+          if (
+            item.conversation.lastMessage.status &&
+            item.conversation.lastMessage.msg.senderId == item.userInfo.googleId
+          ) {
+            setarrive([...arrive, item.conversation.lastMessage.msg]);
+          }
+        }
       });
     }
   }, [friendsList]);
 
+  const searchFunction = async (e) => {
+    const text = e.target.value.trim();
+    setsearchFriend(text);
+
+    if (openSearch && text.length > 0) {
+      let temp = [];
+     friendsList.map(item=>{
+      if (item.userInfo.name.includes(text)) {
+        temp.push(item);
+      }
+     })
+     setsearchFriendList(temp)
+    }
+  };
+
+
+
+
+  // console.log(searchFriendList)
 
   return (
     <div className="w-full max-h-[calc(91vh-4px)] relative mt-[69px] flex flex-col shadow-2xl  bg-[#F2ECFF]">
@@ -213,6 +236,8 @@ function SideBar({ profile, setprofile }) {
             >
               <input
                 type="text"
+                value={searchFriend}
+                onChange={searchFunction}
                 className="w-full text-gray-500 outline-none"
                 placeholder="Search User"
                 ref={inputRef}
@@ -253,7 +278,8 @@ function SideBar({ profile, setprofile }) {
             </div>
           ) : (
             <>
-              {friendsList.map((i, j) => (
+            {openSearch && searchFriend.length > 0? 
+             <> {searchFriendList.map((i, j) => (
                 <User
                   setarrive={setarrive}
                   arrive={arrive}
@@ -265,6 +291,21 @@ function SideBar({ profile, setprofile }) {
                   }
                 />
               ))}
+              {searchFriendList.length==0 && <div className="flex justify-center items-center h-[70vh] font-medium jonh-font gap-2 "><h3>No Result</h3> <SiReacthookform/></div>}
+              </>
+            :  friendsList.map((i, j) => (
+                <User
+                  setarrive={setarrive}
+                  arrive={arrive}
+                  key={j}
+                  data={i.userInfo}
+                  ManualUpdateTime={ManualUpdateTime}
+                  active={
+                    activeUser.includes(i.userInfo.googleId) ? true : false
+                  }
+                />
+                
+              ))}
             </>
           )}
         </div>
@@ -274,7 +315,7 @@ function SideBar({ profile, setprofile }) {
 
       {!load && friendsList.length == 0 && (
         <div className="absolute flex-col gap-4  w-full items-center mt-16 flex h-[calc(100vh-250px)]  justify-center">
-          <h3 className="text-sm jonh-font">
+          <h3 className="text-sm jonh-font text-center">
             No Frirend's available Make Connection with your friends
           </h3>
           <button

@@ -2,21 +2,14 @@ import React, { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 import SideBar from "./SideBar";
 import ChatBox from "./ChatBox";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { IoMdChatbubbles } from "react-icons/io";
 import { useAuthContext } from "../Auth";
 
 function Home() {
+  const { openUser, setOpenUser, socket, activeUser } = useAuthContext();
+  const [profile, setprofile] = useState(false);
 
-  const {openUser, setOpenUser,socket,activeUser} =useAuthContext()
-const [profile, setprofile] = useState(false);
-
-
-
-  useEffect(() => {
-  
-    
-  }, []);
-
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -32,10 +25,19 @@ const [profile, setprofile] = useState(false);
         </div> */}
 
         <div className=" absolute top-0 z-0 right-0 left-0 lg:relative lg:col-span-9">
-          {openUser.status && <ChatBox active={activeUser.includes(openUser.userData.googleId) ? true :false} />}
-        
+          {openUser.status && (
+            <ChatBox
+              active={
+                activeUser.includes(openUser.userData.googleId) ? true : false
+              }
+            />
+          )}
+        {!openUser.status &&   <div className="w-full h-full flex flex-col justify-center items-center">
+            {" "}
+            <IoMdChatbubbles className="text-[20vh] text-slate-400" />
+            <h3 className="jonh-font text-md">No Chat Available</h3>
+          </div>}
         </div>
-
       </div>
     </>
   );

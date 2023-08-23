@@ -3,6 +3,7 @@ import ProfilePic from "../asset/ProfilePic.jpg";
 import Message from "./HelperCom/Message";
 import { BiLoader } from "react-icons/bi";
 import io from "socket.io-client";
+import Picker from "emoji-picker-react"
 
 import {
   BsFillEmojiSmileFill,
@@ -23,6 +24,11 @@ function ChatBox({ active }) {
   // const [conect, setconect] = useState({ stats: false, conId: null });
   const [load, setload] = useState(false);
   const [msg, setmsg] = useState([]);
+
+  const [textMsg, settextMsg] = useState("");
+  const [emojiShow, setEmojiShow] = useState(false);
+
+  const emojiRef= useRef()
 
   const chatContainerRef = useRef(null);
   const { socket, userDetails, openUser, setOpenUser } = useAuthContext();
@@ -113,9 +119,21 @@ function ChatBox({ active }) {
     chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
   }, [msg]);
 
+  useEffect(() => {
+    document.addEventListener("mousedown", (event)=>{
+      if(emojiRef.current && !emojiRef.current.contains(event.target)){
+        setEmojiShow(false)
+
+      }
+    });
+    return () => {
+      document.removeEventListener("mousedown", (event)=>{});
+    };
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const msg = e.target.msg.value.trim();
+    const msg =textMsg.trim();
     e.target.reset();
     if (msg === "") {
       return null;
@@ -131,7 +149,9 @@ function ChatBox({ active }) {
     setmsg((pre) => [...pre, sendMsg]);
 
     addMsg(msg);
+   settextMsg("")
     openUser.ManualUpdateTime(Id);
+
   };
 
   const deleteCoversation = async ({ username, id }) => {
@@ -143,8 +163,13 @@ function ChatBox({ active }) {
       .then((res) => {});
   };
 
+  const emojiAdd = (obj)=>{
+    settextMsg(pre=>pre+obj.emoji)
+
+  }
+
   return (
-    <div className="w-full mt-16 h-[calc(92vh-4px)] relative bg-[#D9D9D9]">
+    <div className="w-full mt-16 h-[calc(92vh-5px)] relative bg-[#D9D9D9]">
       <div
         className="w-full py-3 rounded-lg flex items-center"
         style={{ backgroundColor: "rgba(50, 71, 94, 0.91)" }}
@@ -196,13 +221,19 @@ function ChatBox({ active }) {
           </>
         )}
       </div>
+           {emojiShow &&  <div ref={emojiRef} className="  absolute bottom-16 " >
+            <Picker width="100%" onEmojiClick={emojiAdd} />
+            </div>}
+    
 
       <form action="" onSubmit={handleSubmit}>
         <div className="lg:left-32  w-full lg:w-auto bg-gray-700 justify-between flex items-center rounded-full h-12 lg:right-32 fixed lg:absolute bottom-2">
-          <BsFillEmojiSmileFill className="absolute text-xl text-gray-700 left-3" />
+          <BsFillEmojiSmileFill onClick={()=>{setEmojiShow(!emojiShow)}} className="cursor-pointer absolute text-xl text-gray-700 left-3" />
           <input
             name="msg"
             type="text"
+            value={textMsg}
+            onChange={(e)=>settextMsg(e.target.value)}
             placeholder="Type message....."
             className="flex-grow px-11 outline-none shadow-xl h-full rounded-full rounded-r-none"
           />
