@@ -17,6 +17,10 @@ function App() {
   const fetchData = async (token) => {
     try {
       const res = await fetchUserDetails(token);
+      if (res.status !== 200){
+      localStorage.removeItem("token")
+
+      }
     } catch (error) {
       localStorage.removeItem("token")
       console.error("Error fetching user details:", error);

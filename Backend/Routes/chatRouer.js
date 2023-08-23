@@ -1,5 +1,5 @@
 const express= require("express")
-const { makeConnection, addmessage, fetchChat, fetchFriends, searchUser, deleteConvercation, fetchConversation } = require("../Controllers/chatController")
+const { makeConnection, addmessage, fetchChat, fetchFriends, searchUser, deleteConvercation, fetchConversation, clearLast } = require("../Controllers/chatController")
 const { verifyToken } = require("../Controllers/Middleware")
 
 const chatRouter = express.Router()
@@ -12,5 +12,6 @@ chatRouter.post('/fetchfriends',verifyToken,fetchFriends) // auth body-contain{r
 chatRouter.get('/searchuser',verifyToken,searchUser) // auth param q="search query"
 chatRouter.delete('/delchat',verifyToken,deleteConvercation) // auth , body = {delUserName,gId}
 chatRouter.get('/fetchconversation',verifyToken,fetchConversation) // auth , body = {delUserName,gId}
+chatRouter.post('/clearlast',verifyToken,clearLast) // auth , body = {reciverId}
 
 module.exports=chatRouter

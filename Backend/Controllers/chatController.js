@@ -76,16 +76,19 @@ exports.addmessage = async (req, res) => {
 
   const text = msg.trim();
   const temp = { senderId: userData.googleId, reciverId, text };
+  const lastMsg = temp
+  lastMsg.createdAt = Date.now()
 
   //   const oppData=await findOne({username})
 
   const addMsg = await Chat.findOneAndUpdate(
     { member: { $all: [userData.googleId, reciverId] } },
-    { $push: { message: temp } }
+    { $push: { message: temp } ,lastMessage:{status : true , msg : lastMsg}}
   );
   if (addMsg) {
     // const newMsg=addMsg.message[addMsg.message.length -1]
     // console.log(addMsg)
+
     res.status(200).send({ status: true, msg: "add msg succsess" });
   } else {
     res
@@ -114,8 +117,21 @@ exports.fetchChat = async (req, res) => {
       // { message: { $slice: slice } }
     );
 
+ 
+
     if (!response) {
       return res.status(400).send("Chat illa bro");
+    }
+
+    if(response.lastMessage.status && response.lastMessage.msg.senderId === reciverId){
+      const clearLast = await Chat.findOneAndUpdate({ member: { $all: [userData.googleId, reciverId] }},{lastMessage:{status:false,msg:null}})
+
+      if(!clearLast){
+        
+      return res.status(400).send("Last Message not clear");
+        
+      }
+
     }
     res.send(response).status(200);
   } catch (error) {
@@ -226,6 +242,7 @@ exports.deleteConvercation = async (req, res) => {
 };
 
 exports.fetchConversation = async (req, res) => {
+try {
   const userData = req.data;
 
   const curData = await User.findOne({ googleId: userData.googleId });
@@ -247,4 +264,39 @@ exports.fetchConversation = async (req, res) => {
   }
 
   res.send(conversationData);
+} catch (error) {
+  res.status(500).send(error)
+}
 };
+
+exports.clearLast = async(req,res)=>{
+  try {
+    const userData  = req.data
+    const {reciverId} = req.body
+
+    const response = await Chat.findOne(
+      {
+        member: { $all: [userData.googleId, reciverId] },
+      },
+      // { message: { $slice: slice } }
+    );
+
+    if(response.lastMessage.status && response.lastMessage.msg.senderId === reciverId){
+      const clearLast = await Chat.findOneAndUpdate({ member: { $all: [userData.googleId, reciverId] }},{lastMessage:{status:false,msg:null}})
+
+
+      if(!clearLast){
+      return res.status(400).send("no Chat Last")
+        
+      }
+     return res.status(200).send("Removed successfully")
+    }
+    return res.status(200).send(" Already Removed ")
+
+  } catch (error) {
+  res.status(500).send(error)
+    
+  }
+}
+
+

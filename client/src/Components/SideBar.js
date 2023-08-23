@@ -85,6 +85,7 @@ function SideBar({ profile, setprofile }) {
   }, []);
 
   const sortArray = (arr) => {
+    console.log(arr)
     const newSort = arr.sort(
       (a, b) =>
         new Date(b.conversation.updatedAt) - new Date(a.conversation.updatedAt)
@@ -106,12 +107,9 @@ function SideBar({ profile, setprofile }) {
 
     // Create the formatted date-time string
     const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
-   
 
     const updateManual = friendsList.map((item) => {
-
       if (item.userInfo.googleId == id) {
-       
         return {
           ...item,
           conversation: {
@@ -128,13 +126,7 @@ function SideBar({ profile, setprofile }) {
       return null;
     }
     setFriendsList(sortArray(updateManual));
-
-   
   };
-
-  
-
-
 
   // useEffect(() => {
 
@@ -160,13 +152,12 @@ function SideBar({ profile, setprofile }) {
   useEffect(() => {
     // console.log("before....",friendsList)
 
-    socket.on("reciveMsg",(data) => {
+    socket.on("reciveMsg", (data) => {
       setarrive([...arrive, data]);
 
-      
       ManualUpdateTime(data.senderId);
     });
-  }, [socket,friendsList]);
+  }, [socket, friendsList]);
 
   useEffect(() => {
     socket.on("delete", (data) => {
@@ -179,6 +170,22 @@ function SideBar({ profile, setprofile }) {
       }
     });
   }, [socket, friendsList]);
+
+  useEffect(() => {
+    if (friendsList.length != 0) {
+      friendsList.map((item) => {
+     if(item.conversation){
+      if (
+        item.conversation.lastMessage.status &&
+        item.conversation.lastMessage.msg.senderId == item.userInfo.googleId
+      ) {
+        setarrive([...arrive, item.conversation.lastMessage.msg]);
+      }
+     }
+      });
+    }
+  }, [friendsList]);
+
 
   return (
     <div className="w-full max-h-[calc(91vh-4px)] relative mt-[69px] flex flex-col shadow-2xl  bg-[#F2ECFF]">

@@ -11,28 +11,31 @@ exports.callback = async (req, res) => {
     if (!token) {
       return res.redirect(`${req.protocol}://${req.get("host")}/login`);
     }
-
+    // ${req.get('host')}
     return res
       .status(200)
-      .redirect(`${req.protocol}://${req.get('host')}/redirect/${token}`);
+      .redirect(`${req.protocol}://localhost:3000/redirect/${token}`);
   } catch (error) {
     return res.status(400).redirect(`${req.protocol}://${req.get("host")}/login`);
   }
 };
 
 exports.fetchData = async (req, res) => {
+try {
   const userData = req.data;
   if (!userData) {
     return res.status(400).send("user data illa parama");
   }
-  try {
+ 
     const response = await User.findOne({ googleId: userData.googleId });
     if (!response) {
       return res.status(404).send("User not found.");
     }
 
     return res.status(200).send(response);
-  } catch (error) {
-    return res.status(500).send(error);
-  }
+ 
+} catch (error) {
+  return res.status(500).send(error);
+  
+}
 };

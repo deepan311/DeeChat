@@ -28,7 +28,7 @@ function ChatBox({ active }) {
   const { socket, userDetails, openUser, setOpenUser } = useAuthContext();
 
   const Id = openUser.userData.googleId;
-  // console.log(Id)
+  // console.log(msg)
 
   useEffect(() => {
     const receiveMsgHandler = (data) => {
@@ -77,13 +77,36 @@ function ChatBox({ active }) {
         console.log("res", res.data.data);
 
         // setmsg({...msg},{senderId:userDetails.googleId,reciverId:Id.deepan,text:msg})
+      })
+      .catch((err) => {
+        console.log(err, "somthing error");
       });
   };
 
   useEffect(() => {
     chatFetch();
     setmsg([]);
+
+    return () => chatFetch();
   }, [openUser.userData]);
+
+  const clearLast = async () => {
+    await axios.post(
+      `${process.env.REACT_APP_API_URL}/chat/clearlast`,
+      { reciverId: Id },
+      { headers: { token: localStorage.getItem("token") } }
+    ).then(res=>{
+      
+    }).catch(err=>{
+      console.log(err)
+    })
+  };
+
+  useEffect(() => {
+    socket.on("reciveMsg", (data) => {
+      clearLast()
+    });
+  }, [socket]);
 
   useEffect(() => {
     // Scroll to the bottom when the component is loaded
@@ -112,12 +135,12 @@ function ChatBox({ active }) {
   };
 
   const deleteCoversation = async ({ username, id }) => {
-    await axios.delete(`${process.env.REACT_APP_API_URL}/chat/delchat`, {
-      delUserName: username,
-      gId: id,
-    }).then(res=>{
-      
-    })
+    await axios
+      .delete(`${process.env.REACT_APP_API_URL}/chat/delchat`, {
+        delUserName: username,
+        gId: id,
+      })
+      .then((res) => {});
   };
 
   return (
