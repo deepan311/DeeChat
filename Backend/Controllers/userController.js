@@ -14,7 +14,7 @@ exports.callback = async (req, res) => {
     // ${req.get('host')}
     return res
       .status(200)
-      .redirect(`${req.protocol}://localhost:3000/redirect/${token}`);
+      .redirect(`${req.protocol}://${req.get('host')}/redirect/${token}`);
   } catch (error) {
     return res.status(400).redirect(`${req.protocol}://${req.get("host")}/login`);
   }
