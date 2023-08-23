@@ -32,11 +32,13 @@ function Home() {
               }
             />
           )}
-        {!openUser.status &&   <div className="w-full h-full flex flex-col justify-center items-center">
+      <div className="w-full h-full flex flex-col justify-center items-center">
+      {!openUser.status &&   <div className="hidden lg:block  ">
             {" "}
             <IoMdChatbubbles className="text-[20vh] text-slate-400" />
             <h3 className="jonh-font text-md">No Chat Available</h3>
           </div>}
+      </div>
         </div>
       </div>
     </>

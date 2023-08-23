@@ -222,7 +222,7 @@ function ChatBox({ active }) {
         )}
       </div>
            {emojiShow &&  <div ref={emojiRef} className="  absolute bottom-16 " >
-            <Picker width="100%" onEmojiClick={emojiAdd} />
+            <Picker width="100%" onEmojiClick={emojiAdd} searchDisabled/>
             </div>}
     
 
@@ -230,6 +230,7 @@ function ChatBox({ active }) {
         <div className="lg:left-32  w-full lg:w-auto bg-gray-700 justify-between flex items-center rounded-full h-12 lg:right-32 fixed lg:absolute bottom-2">
           <BsFillEmojiSmileFill onClick={()=>{setEmojiShow(!emojiShow)}} className="cursor-pointer absolute text-xl text-gray-700 left-3" />
           <input
+          autoComplete="off"
             name="msg"
             type="text"
             value={textMsg}
